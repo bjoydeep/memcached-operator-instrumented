@@ -55,3 +55,6 @@ This creates ServiceMonitor CRs correctly, there are known ways to visualize the
 5. kubectl create -f deploy/role_binding.yaml
 6. kubectl create -f deploy/operator.yaml
 7. Modify the service and ServiceMonitor as explained above - and you will be set.
+
+## Coming soon
+The custom metrics will be embedded in the reconcile loop to collect real operator metrics

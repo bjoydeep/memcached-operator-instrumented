@@ -134,7 +134,8 @@ func main() {
 	addMetrics(ctx, cfg)
 
 	//Add Custom Metrics
-	custommetrics.MetricStart(customMetricsPort)
+	//make sure its a go func call else it will block
+	go custommetrics.MetricStart(customMetricsPort)
 
 	log.Info("Starting the Cmd.")
 
