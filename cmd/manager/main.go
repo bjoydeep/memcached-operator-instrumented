@@ -132,6 +132,7 @@ func main() {
 	// Add the Metrics Service
 	addMetrics(ctx, cfg)
 
+	//Add Custom Metrics
 	custommetrics.MetricStart()
 
 	log.Info("Starting the Cmd.")

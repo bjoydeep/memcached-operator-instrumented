@@ -115,7 +115,7 @@ func MetricStart() {
 	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 	http.Handle("/metricsbase", promhttp.Handler())
 
-	log.Println("Listening on localhost:8989")
+	log.Println("Custom Metric Service started on port:8989")
 	log.Fatal(http.ListenAndServe(":8989", nil))
 
 }

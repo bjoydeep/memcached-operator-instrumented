@@ -13,6 +13,7 @@ Therefore, in this example, under `pkg/custommetrics` - you will see that we:
 3. create a http handler to serve these metrics
 4. And finally, we initialize this from `cmd/manager/main.go`
 
+
 ## How to visualize the metrics
 The basic operator exposes metrics in 2 ports as you will see in `cmd/manager/main.go`
 ```
@@ -31,3 +32,12 @@ However this exposes the `standard operator metrics`. But for the custom metrics
 - we also need to modify the service monitor created above to look for the custom metric port.
 
 Once ServiceMonitor CRs are created, there are known ways to visualize these metris in Prometheus/Grafana.
+
+## How to just deploy and play
+1. The operator image is available here: quay.io/bjoydeep/memcached-operator-inst:002 and the deploy/operator.yaml is pointing to it.
+2. kubectl create -f deploy/crd/cache.example.com_memcachedinsts_crd.yaml
+3. kubectl create -f deploy/service_account.yaml
+4. kubectl create -f deploy/role.yaml
+5. kubectl create -f deploy/role_binding.yaml
+6. kubectl create -f deploy/operator.yaml
+7. Modify the service and ServiceMonitor as explained above - and you will be set.
