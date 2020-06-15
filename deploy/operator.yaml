@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached-operator-instrumented
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: memcached-operator-instrumented
+  template:
+    metadata:
+      labels:
+        name: memcached-operator-instrumented
+    spec:
+      serviceAccountName: memcached-operator-instrumented
+      containers:
+        - name: memcached-operator-instrumented
+          # Replace this with the built image name
+          image: quay.io/bjoydeep/memcached-operator-inst:002
+          command:
+          - memcached-operator-instrumented
+          args:
+          - '--zap-level=3'
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "memcached-operator-instrumented"
