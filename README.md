@@ -21,20 +21,34 @@ var (
 	metricsHost               = "0.0.0.0"
 	metricsPort         int32 = 8383
 	operatorMetricsPort int32 = 8686
-)
+..
 ```
 The basic operator creates:
 1. kubernetes service and 
 2. ServiceMonitor Custom Resource in the namespace in which the operator POD runs. 
 
-However this exposes the `standard operator metrics`. But for the custom metrics, we need a few extra steps
-- we need to modify the service created above to exposes the custom metric port explicitly. 
-- we also need to modify the service monitor created above to look for the custom metric port.
+However this exposes the `standard operator metrics`. For the `custom metrics`, we need to modify the service created above to exposes the custom metric port explicitly. This will allow the service monitor created to point to custom metric port. Therefore in the `cmd/manager/main.go` we have added `customMetricsPort`
+```
+var (
+	metricsHost               = "0.0.0.0"
+	metricsPort         int32 = 8383
+	operatorMetricsPort int32 = 8686
+	customMetricsPort   int32 = 8989
+)
 
-Once ServiceMonitor CRs are created, there are known ways to visualize these metris in Prometheus/Grafana.
+....
+servicePorts := []v1.ServicePort{
+		{Port: metricsPort, Name: metrics.OperatorPortName, Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: metricsPort}},
+		{Port: operatorMetricsPort, Name: metrics.CRPortName, Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: operatorMetricsPort}},
+		{Port: customMetricsPort, Name: "custom-metrics", Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: customMetricsPort}},
+	}
+
+```
+
+This creates ServiceMonitor CRs correctly, there are known ways to visualize these metris in Prometheus/Grafana.
 
 ## How to just deploy and play
-1. The operator image is available here: quay.io/bjoydeep/memcached-operator-inst:002 and the deploy/operator.yaml is pointing to it.
+1. The operator image is available here: quay.io/bjoydeep/memcached-operator-inst:003 and the deploy/operator.yaml is pointing to it.
 2. kubectl create -f deploy/crd/cache.example.com_memcachedinsts_crd.yaml
 3. kubectl create -f deploy/service_account.yaml
 4. kubectl create -f deploy/role.yaml

@@ -39,6 +39,7 @@ var (
 	metricsHost               = "0.0.0.0"
 	metricsPort         int32 = 8383
 	operatorMetricsPort int32 = 8686
+	customMetricsPort   int32 = 8989
 )
 var log = logf.Log.WithName("cmd")
 
@@ -133,7 +134,7 @@ func main() {
 	addMetrics(ctx, cfg)
 
 	//Add Custom Metrics
-	custommetrics.MetricStart()
+	custommetrics.MetricStart(customMetricsPort)
 
 	log.Info("Starting the Cmd.")
 
@@ -164,6 +165,7 @@ func addMetrics(ctx context.Context, cfg *rest.Config) {
 	servicePorts := []v1.ServicePort{
 		{Port: metricsPort, Name: metrics.OperatorPortName, Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: metricsPort}},
 		{Port: operatorMetricsPort, Name: metrics.CRPortName, Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: operatorMetricsPort}},
+		{Port: customMetricsPort, Name: "custom-metrics", Protocol: v1.ProtocolTCP, TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: customMetricsPort}},
 	}
 
 	// Create Service object to expose the metrics port(s).

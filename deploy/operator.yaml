@@ -16,7 +16,7 @@ spec:
       containers:
         - name: memcached-operator-instrumented
           # Replace this with the built image name
-          image: quay.io/bjoydeep/memcached-operator-inst:002
+          image: quay.io/bjoydeep/memcached-operator-inst:003
           command:
           - memcached-operator-instrumented
           args:

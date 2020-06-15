@@ -61,8 +61,10 @@ func fetchTestData() {
 	testData.WithLabelValues("GET", "/test", "2.0.0").Add(2.354)
 }
 
-func MetricStart() {
+func MetricStart(port int32) {
 
+	var customMetricsPort = port
+	//registering the metrics to a custom registry
 	r := prometheus.NewRegistry()
 	r.MustRegister(opsProcessed)
 	r.MustRegister(rpcDuration)
@@ -113,9 +115,9 @@ func MetricStart() {
 	})
 
 	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
-	http.Handle("/metricsbase", promhttp.Handler())
 
-	log.Println("Custom Metric Service started on port:8989")
-	log.Fatal(http.ListenAndServe(":8989", nil))
+	log.Println("Custom Metric Service started on port: " + fmt.Sprint(customMetricsPort))
+	//log.Fatal(http.ListenAndServe(":8989", nil))
+	log.Fatal(http.ListenAndServe(":"+fmt.Sprint(customMetricsPort), nil))
 
 }
